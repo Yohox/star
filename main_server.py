@@ -47,9 +47,9 @@ weights = []
 def merge(uid, address, data):
     print("getAlpha参数: ", 1, int(time.time()), data['t0'], 0.003, 1, data['uid'], data['n_d'], data['s'])
     alpha = getAlpha(1, int(time.time()), data['t0'], 0.003, 1, data['uid'], data['n_d'], data['s'])
-    if alpha > 0.5:
-        alpha = 0.5
     print("此次更新率: " + str(alpha))
+    if alpha == 0:
+        return
     localStateDict = data['local_state_dict']
     globStateDict = data['global_state_dict']
 
@@ -64,6 +64,7 @@ def merge(uid, address, data):
         'model_state_hex': stateDictHex,
         'score': score,
         'address': address,
+        'cur_global_state_dict': globStateDict
     }
 
 
@@ -99,6 +100,15 @@ def newLocalModel(address):
     return '1'
 
 
+@app.post('/newGlobalModel')
+def newGlobalModel():
+    data = request.json
+    globalModelStateDict = hexToStateDict(data['global_model_hex'])
+    global net_glob
+    net_glob.load_state_dict(globalModelStateDict)
+    return '1'
+
+
 def register(address, dataSize):
     global globalState
     if address in globalState['uid'].keys():
@@ -108,7 +118,7 @@ def register(address, dataSize):
     globalState['t'].append(int(time.time()))
     globalState['n_d'] = globalState['n_d'] + 1
     globalState['s'][0].append(dataSize)
-    globalState['s'][1].append(0)
+    globalState['s'][1].append(0.5)
     globalState['s'][2].append(1)
     globalState['s'][3].append(0)
     return True
@@ -135,4 +145,5 @@ def getModelType():
 
 if __name__ == '__main__':
     # register('0xf64477d1bB82c772F853813F088FfD9C466b3538', 700)
+    # k = getAlpha(1, 1670135542, 1670135515.899362, 0.003, 1, 1, 2,  [[20000, 40000], [0.5, 0.5], [1, 1], [2.9873648640861994, 3.351467460227369]])
     socketio.run(app, allow_unsafe_werkzeug=True, port=args.port)

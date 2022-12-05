@@ -69,18 +69,25 @@ def normalization(s):
     res = []
     for k in range(len(s)):
         res.append([])
-        min = s[k][0]
-        max = s[k][0]
+        # min = s[k][0]
+        # max = s[k][0]
+        # for i in range(len(s[k])):
+        #     if s[k][i] < min:
+        #         min = s[k][i]
+        #     if s[k][i] > max:
+        #         max = s[k][i]
+        sum = 0
         for i in range(len(s[k])):
-            if s[k][i] < min:
-                min = s[k][i]
-            if s[k][i] > max:
-                max = s[k][i]
+            sum += s[k][i]
+        if sum == 0:
+            return 0
+        # for i in range(len(s[k])):
+        #     if max == min:
+        #         res[k].append(1/len(s[k]))
+        #         continue
+        #     res[k].append((s[k][i] - min) / (max - min))
         for i in range(len(s[k])):
-            if max == min:
-                res[k].append(0)
-                continue
-            res[k].append((s[k][i] - min) / (max - min))
+            res[k].append(s[k][i] / sum)
     return res
 
 

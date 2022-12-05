@@ -3,10 +3,10 @@ import numpy as np
 from utils.dataset import DatasetSplit
 
 
-def iid(dataset, user_id, num_users):
-    num_items = int(len(dataset) / num_users)
+def iid(dataset, start_index, end_index):
+    # num_items = int(len(dataset) / num_users)
     all_idxs = [i for i in range(len(dataset))]
-    return DatasetSplit(dataset, all_idxs[num_items * user_id: num_items * (user_id + 1)])
+    return DatasetSplit(dataset, all_idxs[start_index: end_index])
 
 
 def non_iid(dataset, user_id, num_users):

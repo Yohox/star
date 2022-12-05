@@ -149,8 +149,8 @@ if __name__ == '__main__':
         dataset_test = datasets.MNIST('../data/mnist/', train=False, download=True, transform=trans_mnist)
 
         if args.iid:
-            dataset_train = iid(dataset_train, args.user_id, args.num_users)
-            dataset_test = iid(dataset_test, args.user_id, args.num_users)
+            dataset_train = iid(dataset_train, args.start_train_index, args.end_train_index)
+            dataset_test = iid(dataset_test, args.start_test_index, args.end_test_index)
         else:
             dataset_train = non_iid(dataset_train, args.user_id, args.num_users)
             dataset_test = non_iid(dataset_test, args.user_id, args.num_users)
@@ -165,7 +165,7 @@ if __name__ == '__main__':
         exit("don't support dataset")
 
     node = Node(device=device, epoch=args.epoch, dataset_train=dataset_train, dataset_test=dataset_test, lr=args.lr)
-    register(len(dataset_train.dataset))
+    register(len(dataset_train.idxs))
     while True:
         net_glob = getNetGlob().to(device=device)
         node.train(net_glob)
